@@ -13,6 +13,7 @@ import time
 
 # plotting
 from sklearn.manifold import TSNE
+from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
 import itertools
@@ -28,7 +29,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import PCA
 from sklearn.cluster import DBSCAN
-from sklearn.metrics import pairwise_distances
+from sklearn.metrics import pairwise_distances, silhouette_score
 from sklearn.neighbors import NearestNeighbors
 
 import nltk
@@ -151,7 +152,7 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
 
     # plot valid clusters
     start = time.perf_counter()
-    cluster_fig = plot_cluster(valid_cluster_inds, X, data)
+    figs = plot_cluster(valid_cluster_inds, X, data)
     end = time.perf_counter()
     plot_time = end-start
     
@@ -184,7 +185,7 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
             selected_indices.add(idx)
             selected_articles.append(data.iloc[[idx]])
     
-    return pd.concat(selected_articles, ignore_index=True), cluster_fig, plot_time
+    return pd.concat(selected_articles, ignore_index=True), figs, plot_time
 
 def plot_cluster(valid_cluster_inds, X, data):
     """
@@ -204,7 +205,43 @@ def plot_cluster(valid_cluster_inds, X, data):
         ax.scatter(x_2d[indices, 0], x_2d[indices, 1], color=colors[i], label=i+1)
         i += 1
     ax.legend(loc='center right', bbox_to_anchor = (1.0, 0.5))
-    return cluster_fig
+
+    # plot word cloud (article titles and texts)
+    top_valid = sorted(valid_cluster_inds, 
+                        key=lambda x: len(valid_cluster_inds[x]),
+                        reverse=True)[:DEFAULT_NUM_ARTICLES]
+    wc_title_fig, axs_title = plt.subplots(1, DEFAULT_NUM_ARTICLES,
+                                           figsize=(10*DEFAULT_NUM_ARTICLES, 5))
+    wc_text_fig, axs_text = plt.subplots(1, DEFAULT_NUM_ARTICLES,
+                                         figsize=(10*DEFAULT_NUM_ARTICLES, 5))
+    for i in range(DEFAULT_NUM_ARTICLES):
+        titles = data.iloc[valid_cluster_inds[top_valid[i]]]['title']
+        texts = data.iloc[valid_cluster_inds[top_valid[i]]]['text']
+
+        wc_title = WordCloud(
+            background_color='white',
+            stopwords=stopwords.words('english'),
+            min_font_size=10,
+            width=1000,
+            height=600
+        ).generate(' '.join(titles).lower())
+        wc_text = WordCloud(
+            background_color='white',
+            stopwords=stopwords.words('english'),
+            min_font_size=10,
+            width=1000,
+            height=600
+        ).generate(' '.join(texts).lower())
+
+        axs_title[i].imshow(wc_title)
+        axs_title[i].set_title(f'Titles of Cluster {top_valid[i]}',fontsize=20)
+        axs_title[i].axis('off')
+
+        axs_text[i].imshow(wc_text)
+        axs_text[i].set_title(f'Articles of Cluster {top_valid[i]}',fontsize=20)
+        axs_text[i].axis('off')
+
+    return cluster_fig, wc_title_fig, wc_text_fig
 
 def process_date(date, data, output_path):
     """
@@ -233,16 +270,19 @@ def process_date(date, data, output_path):
     n_noise_points = list(labels).count(-1)
     n_grouped_points = len(labels) - n_noise_points
     total_samples = len(labels)
+    val_ind = np.where(labels != -1)[0]
+    sil_score = silhouette_score(X[val_ind], labels[val_ind])
     
     print(f"\n--- Cluster Statistics ---")
     print(f"Number of clusters: {n_clusters}")
     print(f"Total number of samples: {total_samples}")
     print(f"Number of grouped points: {n_grouped_points}")
     print(f"Number of noise points: {n_noise_points}")
+    print(f"Mean Silhouette Coefficient: {sil_score:.3}")
     print("---------------------------\n")
     
     start = time.perf_counter()
-    selected_articles, cluster_fig, plot_time = select_top_articles(
+    selected_articles, figs, plot_time = select_top_articles(
         daily_data,
         labels,
         X,
@@ -253,8 +293,16 @@ def process_date(date, data, output_path):
     
     save_path = os.path.join(output_path, date)
     os.makedirs(save_path, exist_ok=True)
+
+    # saving articles
     selected_articles.to_csv(os.path.join(save_path, 'articles_selected.csv'), index=False)
+
+    # saving plots
+    cluster_fig, wc_title_fig, wc_text_fig = figs
     cluster_fig.savefig(os.path.join(save_path, 'clusters.png'))
+    wc_title_fig.savefig(os.path.join(save_path, 'titles.png'), bbox_inches='tight')
+    wc_text_fig.savefig(os.path.join(save_path, 'texts.png'), bbox_inches='tight')
+
     print(f"Articles for {date} saved successfully!")
 
     return pre_time, vec_time, cluster_time, select_time, plot_time
@@ -315,7 +363,7 @@ if __name__ == '__main__':
     end = time.perf_counter()
     total_time = end-start
 
-    with open(args.output_path + "/times.txt", "a") as f:
+    with open(args.output_path + "/times.txt", "w") as f:
         print(f'Elapsed Time = {total_time} ns', file=f)
         print(f'-- Loading Data = {times[0]} ns | {times[0]/total_time:.3%} total', file=f)
         print(f'-- Processing Dates = {times[1]} ns | {times[1]/total_time:.3%} total', file=f)
