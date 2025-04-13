@@ -9,6 +9,14 @@ python main.py \
   --output_path ./result
 """
 
+import time
+
+# plotting
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+
+import itertools
+
 import argparse
 import os
 import random
@@ -63,7 +71,10 @@ def vectorize_text(news_text, n_components=100):
     TF-IDF vectorization and dimension reducation of text data.
     """
     print("Preprocessing text data...")
+    start = time.perf_counter()
     preprocessed_text = [preprocess_text(text) for text in news_text]
+    end = time.perf_counter()
+    pre_time = end-start
     
     print("Vectorizing text data with TF-IDF...")
     vectorizer = TfidfVectorizer()
@@ -74,7 +85,7 @@ def vectorize_text(news_text, n_components=100):
         pca = PCA(n_components=n_components)
         X = pca.fit_transform(X.toarray())
     
-    return X
+    return X, pre_time
 
 
 def adjust_dbscan_params(X, k=5):
@@ -124,7 +135,7 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
         clusters[label].append(i)
     
     valid_clusters = []
-    
+    valid_cluster_inds = {}
     # Check for validity of each cluster based on average pairwise distance
     for cluster_id, indices in clusters.items():
         if cluster_id == -1 or len(indices) < 2:
@@ -136,6 +147,13 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
         # Only consider clusters with avg_distance <= avg_distance_threshold
         if avg_distance <= avg_distance_threshold:
             valid_clusters.append((cluster_id, len(indices), avg_distance))
+            valid_cluster_inds[cluster_id] = indices
+
+    # plot valid clusters
+    start = time.perf_counter()
+    cluster_fig = plot_cluster(valid_cluster_inds, X, data)
+    end = time.perf_counter()
+    plot_time = end-start
     
     # Sort valid clusters by size (descending)
     valid_clusters = sorted(valid_clusters, key=lambda x: x[1], reverse=True)
@@ -143,7 +161,7 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
     # Sanity check
     print(f"--- Titles in Top-{DEFAULT_NUM_ARTICLES} Valid Clusters ---")
     for i, (cluster_id, size, avg_distance) in enumerate(valid_clusters[:DEFAULT_NUM_ARTICLES], start=1):
-        cluster_indices = [idx for idx, lbl in enumerate(labels) if lbl == cluster_id]
+        cluster_indices = valid_cluster_inds[cluster_id]
         cluster_titles = data.iloc[cluster_indices]['title'].tolist()
         print(f"\nCluster {i} (ID: {cluster_id}, Size: {size}, Avg Distance: {avg_distance:.4f}) Titles:")
         for title in cluster_titles:
@@ -166,8 +184,27 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
             selected_indices.add(idx)
             selected_articles.append(data.iloc[[idx]])
     
-    return pd.concat(selected_articles, ignore_index=True)
+    return pd.concat(selected_articles, ignore_index=True), cluster_fig, plot_time
 
+def plot_cluster(valid_cluster_inds, X, data):
+    """
+    Plot Cluster Labels in 2D
+    Plot Cluster WordClouds
+    """
+    # reduce to 2D
+    perplexity = len(X)-1 if len(X) < 31.0 else 30.0
+    x_2d = TSNE(n_components=2, random_state=0, perplexity=perplexity).fit_transform(X)
+
+    # plot 2D with cluster labels
+    colors = plt.cm.rainbow(np.linspace(0, 1, len(valid_cluster_inds)))
+    cluster_fig, ax = plt.subplots(figsize=(8,5))
+    ax.set_title('TSNE Cluster Visualization')
+    i = 0
+    for label, indices in valid_cluster_inds.items():
+        ax.scatter(x_2d[indices, 0], x_2d[indices, 1], color=colors[i], label=i+1)
+        i += 1
+    ax.legend(loc='center right', bbox_to_anchor = (1.0, 0.5))
+    return cluster_fig
 
 def process_date(date, data, output_path):
     """
@@ -179,10 +216,17 @@ def process_date(date, data, output_path):
         return
     
     news_text = daily_data['text'].tolist()
-    X = vectorize_text(news_text)
+    start = time.perf_counter()
+    X, pre_time = vectorize_text(news_text)
+    end = time.perf_counter()
+    vec_time = end-start
     # eps, min_samples = adjust_dbscan_params(X)
     eps, min_samples = 0.5, 3
+
+    start = time.perf_counter()
     labels = cluster_texts(X, eps=eps, min_samples=min_samples)
+    end = time.perf_counter()
+    cluster_time = end-start
     
     # Sanity check - cluster statistics
     n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
@@ -197,31 +241,65 @@ def process_date(date, data, output_path):
     print(f"Number of noise points: {n_noise_points}")
     print("---------------------------\n")
     
-    selected_articles = select_top_articles(
+    start = time.perf_counter()
+    selected_articles, cluster_fig, plot_time = select_top_articles(
         daily_data,
         labels,
         X,
         avg_distance_threshold=0.7
     )
+    end = time.perf_counter()
+    select_time = end-start
     
     save_path = os.path.join(output_path, date)
     os.makedirs(save_path, exist_ok=True)
     selected_articles.to_csv(os.path.join(save_path, 'articles_selected.csv'), index=False)
+    cluster_fig.savefig(os.path.join(save_path, 'clusters.png'))
     print(f"Articles for {date} saved successfully!")
+
+    return pre_time, vec_time, cluster_time, select_time, plot_time
 
 
 def main(args):
+    start = time.perf_counter()
     data = load_data(args.input_path)
+    end = time.perf_counter()
+    load_time = end-start
     
     start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
     end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
     
     date_range = pd.date_range(start=start_date, end=end_date)
     
+    process_date_times = []
+    preprocess_times = []
+    vectorize_times = []
+    cluster_times = []
+    select_topk_times = []
+    plot_times = []
     for current_date in tqdm(date_range, desc="Processing Dates"):
         date_str = current_date.strftime("%Y-%m-%d")
         print(f"\nProcessing date: {date_str}")
-        process_date(date_str, data, args.output_path)
+
+        start = time.perf_counter()
+        times = process_date(date_str, data, args.output_path) 
+        end = time.perf_counter()
+
+        process_date_times.append(end-start)
+        preprocess_times.append(times[0])
+        vectorize_times.append(times[1])
+        cluster_times.append(times[2])
+        select_topk_times.append(times[3])
+        plot_times.append(times[4])
+
+
+    return (load_time,
+            sum(process_date_times),
+            sum(preprocess_times),
+            sum(vectorize_times),
+            sum(cluster_times),
+            sum(select_topk_times),
+            sum(plot_times))
         
 
 if __name__ == '__main__':
@@ -232,4 +310,17 @@ if __name__ == '__main__':
     parser.add_argument('--output_path', type=str, required=True, help='Path to save the output data')
     
     args = parser.parse_args()
-    main(args)
+    start = time.perf_counter()
+    times = main(args)
+    end = time.perf_counter()
+    total_time = end-start
+
+    with open(args.output_path + "/times.txt", "a") as f:
+        print(f'Elapsed Time = {total_time} ns', file=f)
+        print(f'-- Loading Data = {times[0]} ns | {times[0]/total_time:.3%} total', file=f)
+        print(f'-- Processing Dates = {times[1]} ns | {times[1]/total_time:.3%} total', file=f)
+        print(f'   -- Vectorizing Texts = {times[3]} ns | {times[3]/times[1]:.3%} Processing Dates', file=f)
+        print(f'      -- Pre-processing Texts = {times[2]} ns | {times[2]/times[3]:.3%} Vectorizing Texts', file=f)
+        print(f'   -- Clustering Texts = {times[4]} ns | {times[4]/times[1]:.3%} Processing Dates', file=f)
+        print(f'   -- Selecting Top Articles = {times[5]} ns | {times[5]/times[1]:.3%} Processing Dates', file=f)
+        print(f'      -- Plotting = {times[6]} ns | {times[6]/times[5]:.3%} Selecting Top Articles\n', file=f)
