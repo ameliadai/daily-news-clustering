@@ -46,6 +46,17 @@ nltk.download('punkt')
 # Constants
 DEFAULT_NUM_ARTICLES = 3
 
+def time_func(func):
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        output = func(*args, **kwargs)
+        end = time.perf_counter()
+        return end-start, output
+
+    return wrapper
+
+
+@time_func
 def load_data(file_path):
     df = pd.read_csv(file_path)
     df.drop_duplicates(subset=['text'], keep='first', inplace=True)
@@ -56,6 +67,8 @@ def load_data(file_path):
     df = df.reset_index(drop = True)
     return df
 
+
+@time_func
 def preprocess_text(text):
     """Clean and preprocess text data."""
     tokens = nltk.word_tokenize(text)
@@ -67,15 +80,17 @@ def preprocess_text(text):
     return ' '.join(tokens)
 
 
+@time_func
 def vectorize_text(news_text, n_components=100):
     """
     TF-IDF vectorization and dimension reducation of text data.
     """
     print("Preprocessing text data...")
-    start = time.perf_counter()
-    preprocessed_text = [preprocess_text(text) for text in news_text]
-    end = time.perf_counter()
-    pre_time = end-start
+    pre_time, preprocessed_text = 0, []
+    for text in news_text:
+        p_time, p_text = preprocess_text(text)
+        pre_time += p_time
+        preprocessed_text.append(p_text)
     
     print("Vectorizing text data with TF-IDF...")
     vectorizer = TfidfVectorizer()
@@ -89,6 +104,7 @@ def vectorize_text(news_text, n_components=100):
     return X, pre_time
 
 
+@time_func
 def adjust_dbscan_params(X, k=5):
     """
     Adjust DBSCAN parameters `eps` and `min_samples` based on the dataset X.
@@ -107,6 +123,7 @@ def adjust_dbscan_params(X, k=5):
     return eps, min_samples
 
 
+@time_func
 def cluster_texts(X, eps=0.5, min_samples=3):
     """
     Cluster vectorized news articles using DBSCAN.
@@ -117,6 +134,7 @@ def cluster_texts(X, eps=0.5, min_samples=3):
     return dbscan.labels_
 
 
+@time_func
 def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
     """
     Select top articles - one from each top-k valid clusters with largest cluster size.
@@ -151,10 +169,7 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
             valid_cluster_inds[cluster_id] = indices
 
     # plot valid clusters
-    start = time.perf_counter()
-    figs = plot_cluster(valid_cluster_inds, X, data)
-    end = time.perf_counter()
-    plot_time = end-start
+    plot_time, figs = plot_cluster(valid_cluster_inds, X, data)
     
     # Sort valid clusters by size (descending)
     valid_clusters = sorted(valid_clusters, key=lambda x: x[1], reverse=True)
@@ -187,6 +202,8 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
     
     return pd.concat(selected_articles, ignore_index=True), figs, plot_time
 
+
+@time_func
 def plot_cluster(valid_cluster_inds, X, data):
     """
     Plot Cluster Labels in 2D
@@ -243,6 +260,8 @@ def plot_cluster(valid_cluster_inds, X, data):
 
     return cluster_fig, wc_title_fig, wc_text_fig
 
+
+@time_func
 def process_date(date, data, output_path):
     """
     Process and save selected articles for a specific date.
@@ -253,17 +272,13 @@ def process_date(date, data, output_path):
         return
     
     news_text = daily_data['text'].tolist()
-    start = time.perf_counter()
-    X, pre_time = vectorize_text(news_text)
-    end = time.perf_counter()
-    vec_time = end-start
-    # eps, min_samples = adjust_dbscan_params(X)
+    vec_time, outputs = vectorize_text(news_text)
+    X, pre_time = outputs
+
+    # adjust_time, eps, min_samples = adjust_dbscan_params(X)
     eps, min_samples = 0.5, 3
 
-    start = time.perf_counter()
-    labels = cluster_texts(X, eps=eps, min_samples=min_samples)
-    end = time.perf_counter()
-    cluster_time = end-start
+    cluster_time, labels = cluster_texts(X, eps=eps, min_samples=min_samples)
     
     # Sanity check - cluster statistics
     n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
@@ -281,15 +296,13 @@ def process_date(date, data, output_path):
     print(f"Mean Silhouette Coefficient: {sil_score:.3}")
     print("---------------------------\n")
     
-    start = time.perf_counter()
-    selected_articles, figs, plot_time = select_top_articles(
+    select_time, outputs = select_top_articles(
         daily_data,
         labels,
         X,
         avg_distance_threshold=0.7
     )
-    end = time.perf_counter()
-    select_time = end-start
+    selected_articles, figs, plot_time = outputs
     
     save_path = os.path.join(output_path, date)
     os.makedirs(save_path, exist_ok=True)
@@ -308,11 +321,9 @@ def process_date(date, data, output_path):
     return pre_time, vec_time, cluster_time, select_time, plot_time
 
 
+@time_func
 def main(args):
-    start = time.perf_counter()
-    data = load_data(args.input_path)
-    end = time.perf_counter()
-    load_time = end-start
+    load_time, data = load_data(args.input_path)
     
     start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
     end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
@@ -329,11 +340,9 @@ def main(args):
         date_str = current_date.strftime("%Y-%m-%d")
         print(f"\nProcessing date: {date_str}")
 
-        start = time.perf_counter()
-        times = process_date(date_str, data, args.output_path) 
-        end = time.perf_counter()
+        process_time, times = process_date(date_str, data, args.output_path) 
 
-        process_date_times.append(end-start)
+        process_date_times.append(process_time)
         preprocess_times.append(times[0])
         vectorize_times.append(times[1])
         cluster_times.append(times[2])
@@ -358,10 +367,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_path', type=str, required=True, help='Path to save the output data')
     
     args = parser.parse_args()
-    start = time.perf_counter()
-    times = main(args)
-    end = time.perf_counter()
-    total_time = end-start
+    total_time, times = main(args)
 
     with open(args.output_path + "/times.txt", "w") as f:
         print(f'Elapsed Time = {total_time} ns', file=f)
