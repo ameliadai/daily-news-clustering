@@ -1,0 +1,9 @@
+Elapsed Time = 12.254573042009724 s
+-- Loading Data = 0.31279825000092387 s | 2.553% total
+-- Processing Dates = 11.924028083012672 s | 97.303% total
+   -- Vectorizing Texts = 3.0692391249758657 s | 25.740% Processing Dates
+      -- Pre-processing Texts = 2.4079369999817573 s | 78.454% Vectorizing Texts
+   -- Clustering Texts = 0.006288208969635889 s | 0.053% Processing Dates
+   -- Selecting Top Articles = 7.675402332999511 s | 64.369% Processing Dates
+      -- Plotting = 7.66904120799154 s | 99.917% Selecting Top Articles
+
