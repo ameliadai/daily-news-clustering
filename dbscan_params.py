@@ -116,7 +116,7 @@ def cluster_texts(X, eps=0.5, min_samples=3):
     """
     Cluster vectorized news articles using DBSCAN.
     """
-    print("Clustering text data using DBSCAN...")
+    # print("Clustering text data using DBSCAN...")
     dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric='cosine')
     dbscan.fit(X)
     return dbscan.labels_
@@ -205,28 +205,27 @@ def process_date(date, data, output_path, sweep=False, eps_values=None, min_samp
         results_df = pd.DataFrame(sweep_results)
         results_df.to_csv(os.path.join(output_path, date, 'dbscan_sweep_results.csv'), index=False)
         best_params = max(sweep_results, key=lambda x: x['silhouette_score'])
+        quickest_params = min(sweep_results, key=lambda x: x['time'])
         eps, min_samples = best_params['eps'], best_params['min_samples']
         print(f"Best parameters for {date}: eps={eps}, min_samples={min_samples}")
-    else:
-        eps, min_samples = 0.5, 3
 
-        cluster_time, labels = cluster_texts(X, eps=eps, min_samples=min_samples)
-    
-    # Sanity check - cluster statistics
-    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-    n_noise_points = list(labels).count(-1)
-    n_grouped_points = len(labels) - n_noise_points
-    total_samples = len(labels)
-    val_ind = np.where(labels != -1)[0]
-    sil_score = silhouette_score(X[val_ind], labels[val_ind])
-    
-    print(f"\n--- Cluster Statistics ---")
-    print(f"Number of clusters: {n_clusters}")
-    print(f"Total number of samples: {total_samples}")
-    print(f"Number of grouped points: {n_grouped_points}")
-    print(f"Number of noise points: {n_noise_points}")
-    print(f"Mean Silhouette Coefficient: {sil_score:.3}")
-    print("---------------------------\n")
+        print(f"\n--- Best Cluster Statistics ---")
+        print(f"Time: {best_params['time']}")
+        print(f"eps: {best_params['eps']}, min_samples: {best_params['min_samples']}")
+        print(f"Number of clusters: {best_params['num_clusters']}")
+        print(f"Total number of samples: {best_params['num_clusters'] + best_params['num_noise_points']}")
+        print(f"Number of grouped points: {best_params['num_clusters']}")
+        print(f"Number of noise points: {best_params['num_noise_points']}")
+        print(f"Mean Silhouette Coefficient: {best_params['silhouette_score']:.3f}")
+
+        print(f"\n--- Quickest Cluster Statistics ---")
+        print(f"Time: {quickest_params['time']}")
+        print(f"eps: {quickest_params['eps']}, min_samples: {quickest_params['min_samples']}")
+        print(f"Number of clusters: {quickest_params['num_clusters']}")
+        print(f"Total number of samples: {quickest_params['num_clusters'] + quickest_params['num_noise_points']}")
+        print(f"Number of grouped points: {quickest_params['num_clusters']}")
+        print(f"Number of noise points: {quickest_params['num_noise_points']}")
+        print(f"Mean Silhouette Coefficient: {quickest_params['silhouette_score']:.3f}")
 
 @time_func
 def load_data(file_path):
@@ -258,7 +257,7 @@ def main(args):
         date_str = current_date.strftime("%Y-%m-%d")
         print(f"\nProcessing date: {date_str}")
 
-        process_time, times = process_date(
+        process_date(
             date_str,
             data,
             args.output_path,
@@ -266,20 +265,6 @@ def main(args):
             eps_values=args.eps_values,
             min_samples_values=args.min_samples_values
         )
-
-        process_date_times.append(process_time)
-        preprocess_times.append(times[0])
-        vectorize_times.append(times[1])
-        cluster_times.append(times[2])
-        select_topk_times.append(times[3])
-
-
-    return (load_time,
-            sum(process_date_times),
-            sum(preprocess_times),
-            sum(vectorize_times),
-            sum(cluster_times),
-            sum(select_topk_times))
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Hot Topic Selection Pipeline")
@@ -289,18 +274,18 @@ if __name__ == '__main__':
     parser.add_argument('--input_path', type=str, required=True, help='Path to the input data')
     parser.add_argument('--output_path', type=str, required=True, help='Path to save the output data')
     parser.add_argument('--sweep', action='store_true', help='Run DBSCAN hyperparameter sweep')
-    parser.add_argument('--eps_values', nargs='+', type=float, default=[0.3, 0.5, 0.7])
-    parser.add_argument('--min_samples_values', nargs='+', type=int, default=[2, 3, 5])
+    parser.add_argument('--eps_values', nargs='+', type=float, default=[0.3, 0.4, 0.5, 0.6, 0.7])
+    parser.add_argument('--min_samples_values', nargs='+', type=int, default=[2, 3, 4, 5])
     
     args = parser.parse_args()
     total_time, times = main(args)
 
-    with open(args.output_path + "/times.txt", "w") as f:
-        print(f'Elapsed Time = {total_time} s', file=f)
-        print(f'-- Loading Data = {times[0]} s | {times[0]/total_time:.3%} total', file=f)
-        print(f'-- Processing Dates = {times[1]} s | {times[1]/total_time:.3%} total', file=f)
-        print(f'   -- Vectorizing Texts = {times[3]} s | {times[3]/times[1]:.3%} Processing Dates', file=f)
-        print(f'      -- Pre-processing Texts = {times[2]} s | {times[2]/times[3]:.3%} Vectorizing Texts', file=f)
-        print(f'   -- Clustering Texts = {times[4]} s | {times[4]/times[1]:.3%} Processing Dates', file=f)
-        print(f'   -- Selecting Top Articles = {times[5]} s | {times[5]/times[1]:.3%} Processing Dates', file=f)
-        print(f'      -- Plotting = {times[6]} s | {times[6]/times[5]:.3%} Selecting Top Articles\n', file=f)
+    # with open(args.output_path + "/times.txt", "w") as f:
+    #     print(f'Elapsed Time = {total_time} s', file=f)
+    #     print(f'-- Loading Data = {times[0]} s | {times[0]/total_time:.3%} total', file=f)
+    #     print(f'-- Processing Dates = {times[1]} s | {times[1]/total_time:.3%} total', file=f)
+    #     print(f'   -- Vectorizing Texts = {times[3]} s | {times[3]/times[1]:.3%} Processing Dates', file=f)
+    #     print(f'      -- Pre-processing Texts = {times[2]} s | {times[2]/times[3]:.3%} Vectorizing Texts', file=f)
+    #     print(f'   -- Clustering Texts = {times[4]} s | {times[4]/times[1]:.3%} Processing Dates', file=f)
+    #     print(f'   -- Selecting Top Articles = {times[5]} s | {times[5]/times[1]:.3%} Processing Dates', file=f)
+    #     print(f'      -- Plotting = {times[6]} s | {times[6]/times[5]:.3%} Selecting Top Articles\n', file=f)
