@@ -2,7 +2,7 @@
 Pipeline: News Article Preprocessing - Vectorization - Clustering - Article Selection
 
 To run:
-python main.py \
+python main_timed.py \
   --start_date 2025-03-01 \
   --end_date 2025-03-03 \
   --input_path ./news/news_2025_03.csv \
@@ -215,22 +215,22 @@ def plot_cluster(valid_cluster_inds, X, data):
 
     # plot 2D with cluster labels
     colors = plt.cm.rainbow(np.linspace(0, 1, len(valid_cluster_inds)))
-    cluster_fig, ax = plt.subplots(figsize=(8,5))
+    cluster_fig, ax = plt.subplots(figsize=(5,3))
     ax.set_title('TSNE Cluster Visualization')
     i = 0
     for label, indices in valid_cluster_inds.items():
         ax.scatter(x_2d[indices, 0], x_2d[indices, 1], color=colors[i], label=i+1)
         i += 1
-    ax.legend(loc='center right', bbox_to_anchor = (1.0, 0.5))
+    ax.legend(loc='center right', bbox_to_anchor = (1.2, 0.5))
 
     # plot word cloud (article titles and texts)
     top_valid = sorted(valid_cluster_inds, 
                         key=lambda x: len(valid_cluster_inds[x]),
                         reverse=True)[:DEFAULT_NUM_ARTICLES]
-    wc_title_fig, axs_title = plt.subplots(1, DEFAULT_NUM_ARTICLES,
-                                           figsize=(10*DEFAULT_NUM_ARTICLES, 5))
-    wc_text_fig, axs_text = plt.subplots(1, DEFAULT_NUM_ARTICLES,
-                                         figsize=(10*DEFAULT_NUM_ARTICLES, 5))
+    wc_title_fig, axs_title = plt.subplots(DEFAULT_NUM_ARTICLES, 1,
+                                           figsize=(8, 3*DEFAULT_NUM_ARTICLES))
+    wc_text_fig, axs_text = plt.subplots(DEFAULT_NUM_ARTICLES, 1,
+                                         figsize=(8, 3*DEFAULT_NUM_ARTICLES))
     for i in range(DEFAULT_NUM_ARTICLES):
         titles = data.iloc[valid_cluster_inds[top_valid[i]]]['title']
         texts = data.iloc[valid_cluster_inds[top_valid[i]]]['text']
@@ -240,14 +240,14 @@ def plot_cluster(valid_cluster_inds, X, data):
             stopwords=stopwords.words('english'),
             min_font_size=10,
             width=1000,
-            height=600
+            height=300
         ).generate(' '.join(titles).lower())
         wc_text = WordCloud(
             background_color='white',
             stopwords=stopwords.words('english'),
             min_font_size=10,
             width=1000,
-            height=600
+            height=300
         ).generate(' '.join(texts).lower())
 
         axs_title[i].imshow(wc_title)
@@ -312,7 +312,9 @@ def process_date(date, data, output_path):
 
     # saving plots
     cluster_fig, wc_title_fig, wc_text_fig = figs
-    cluster_fig.savefig(os.path.join(save_path, 'clusters.png'))
+    cluster_ax = cluster_fig.axes[0]
+    lgd = cluster_ax.get_legend()
+    cluster_fig.savefig(os.path.join(save_path, 'clusters.png'), bbox_extra_artists=(lgd,), bbox_inches='tight')
     wc_title_fig.savefig(os.path.join(save_path, 'titles.png'), bbox_inches='tight')
     wc_text_fig.savefig(os.path.join(save_path, 'texts.png'), bbox_inches='tight')
 
