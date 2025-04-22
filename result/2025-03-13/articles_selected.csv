@@ -1,0 +1,120 @@
+date,text,url,title,source_domain,authors,description,language
+2025-03-13,"Southlake, TX, March 13, 2025 (GLOBE NEWSWIRE) -- HeartSciences Inc. (Nasdaq: HSCS; HSCSW) (""HeartSciences"" or the ""Company""), an artificial intelligence (“AI”)-powered medical technology company focused on transforming ECGs/EKGs to save lives through earlier detection of heart disease, today reported financial results for the third quarter fiscal 2025 ended January 31, 2025 and provided a business update.
+Third Fiscal Quarter 2025 Highlights:
+During the third quarter of fiscal year 2025 (“Q3 FY2025”) and to date in 2025, HeartSciences has seen material progress towards FDA submissions of our products and there have been significant positive developments in the AI-ECG field. A summary of the current status and key business highlights for Q3 FY2025 include:
+AI-ECG presents a generational opportunity to modernize the ECG industry, one of the most ubiquitous medical tests in the world. ECGs are generally decades-old devices, outdated technology and rely on legacy reporting and managements systems. By enhancing both hardware and software, HeartSciences enables earlier and more accurate detection of heart disease, bridging a critical diagnostic gap in frontline healthcare.
+HeartSciences is the only company building next-gen ECG device hardware, device agnostic cloud-native software and AI-ECG algorithms. Our versatility will enable us to deliver AI-ECG solutions across a variety of healthcare settings, ranging from large hospital systems to simple nurse-led mobile testing services.
+The final pre-submission meeting for the MyoVista® wavECGTM device took place with the FDA in February 2025 and we expect to finalize the FDA study clinical validation in a few weeks. Assuming this is successful, we anticipate submiting the device for FDA clearance within the first half of calendar 2025.
+The Company is in active discussions for MyoVista® InsightsTM to be implemented in test sites during 2025, which followed on-scheduled completion of Phase 1, in December 2024. MyoVista Insights is a cloud-native, cybersecure modern technology stack operating on a device agnostic basis for the millions of ECGs in place today. It is intended to radically upgrade ECG reporting and does not require regulatory clearance (as it is reporting based).
+Phase 2, which is subject to regulatory clearance, will add AI-ECG reporting. The Company has developed the system to provide both proprietary and third-party AI-ECG algorithms with the intention to function like an app store for AI-ECG. This will radically reduce the cost and regulatory burden on the Company in developing all of its own algorithms and ensure the Company can bring a broad panel of AI-ECG algorithms to clinical practice in an expeditious manner. HeartSciences is aiming for Phase 2 regulatory submission in the second half of calendar 2025 along with the first cloud-based algorithm (discussed below).
+Thereafter in Phase 3, HeartSciences intends for MyoVista Insights to serve as an ECG management system, a market valued in the billions of dollars. It is a necessity for all hospital systems worldwide to have an ECG management system. Current systems are generally dependent on decades-old IT architecture which are on-premise, server-based, lack flexibility and are costly for health systems. MyoVista Insights is a cloud-native application running on AWS, built to be much lower cost and provide considerably upgraded interoperability and cybersecurity
+In February, 2025 we successfully undertook pre-validation work with Rutgers Robert Wood Johnson Hospital System on the low ejection fraction (LVEF ≤ 40) algorithm licensed from Icahn School of Medicine at Mount Sinai, New York (Mount Sinai). We expect that this will be the first algorithm for FDA validation alongside the MyoVista Insights platform. The Company will now undertake final work and perform FDA validation studies using retrospective data with the aim of FDA submission in the second half of calendar 2025.
+Other notable highlights:
+HeartSciences’ MyoVista wavECG AI-ECG algorithm and many of the AI-ECG algorithms that would be delivered by the MyoVista Insights cloud platform were included in the CMS 2025 OPPS final rule, which became effective in January 2025. This enables appropriate reimbursement immediately upon commercial launch and is a significant milestone in AI-ECG being widely adopted.
+Management Commentary
+“This quarter has seen considerable across the board progress at HeartSciences. Following the meeting with the FDA in February, clinical validation for the MyoVista wavECG device is expected within weeks and, assuming it is successful, FDA submission would follow soon after in the first half of the year.” said Andrew Simpson, CEO of HeartSciences.
+“We successfully completed Phase 1 MyoVista Insights cloud-native platform on schedule, utilizing millions of dollars of investment. We undertook pre-validation of the low ejection fraction algorithm with Rutgers Robert Wood Johnson Hospital System. This is the first of severa algorithms licensed from the Icahn School of Medicine at Mount Sinai which we expect will be applied through regulatory clearance. It reinforces our belief that collaboration with Mount Sinai is enormously valuable.”
+“Feedback on MyoVista Insights cloud-native platform has been excellent, and we are in active discussion for early deployment in test environments. Our ultimate vision is to offer a path to modernize legacy ECG management systems, as they are generally inflexible and costly due to decades-old IT architecture. Instead, we will provide a next-gen, cybersecure cloud-native system to meet the sophisticated data driven needs of today’s health systems. Our AI-ECG marketplace will facilitate far quicker rollout of AI-ECG allowing patients and health systems environments to realize their significant benefits.”
+“Finally, and importantly, CMS has already established reimbursement for AI-ECG at a rate significantly higher than that of conventional ECG. We believe this further validates the clinical value of AI-ECG and highlights the significant commercial opportunity for one of the most widely used medical tests worldwide, with millions of ECGs are performed every week.” concluded Mr. Simpson.
+Third Quarter Fiscal 2025 Financial Results
+There were no revenues during Q3 FY2025. As of January 31, 2025, cash and cash equivalents were approximately $2.6 million and shareholders’ equity was approximately $1.8 million. Complete financial results have been filed in the Company’s Quarterly Report Report for the fiscal quarter ended January 31, 2025 on Form 10-Q with the U.S. Securities and Exchange Commission and is available on the Company’s website https://www.heartsciences.com
+About HeartSciences
+HeartSciences is a medical technology company focused on applying innovative AI-based technology to an ECG (also known as an EKG) to expand and improve an ECG’s clinical utility. Millions of ECGs are performed every week and the Company's objective is to improve healthcare by making it a far more valuable cardiac screening tool, particularly in frontline or point-of-care clinical settings. HeartSciences has one of the largest libraries of AI-ECG algorithms and intends to provide these AI-ECG algorithms on a device agnostic cloud-based solution as well as a low-cost ECG hardware platform. Working with clinical experts, HeartSciences ensures that all solutions are designed to work within existing clinical care pathways, making it easier for clinicians to use AI-ECG technology to improve their patient's care and lead to better outcomes. HeartSciences' first product candidate for FDA clearance, the MyoVista® wavECG™, or the MyoVista®, is a resting 12-lead ECG that is also designed to provide diagnostic information related to cardiac dysfunction which has traditionally only been available through the use of cardiac imaging. The MyoVista® also provides conventional ECG information in the same test.
+For more information, please visit: https://www.heartsciences.com. X: @HeartSciences
+Safe Harbor Statement
+This announcement contains forward-looking statements within the meaning of Section 27A of the Securities Act of 1933, as amended, and Section 21E of the Securities Exchange Act of 1934, as amended. These forward-looking statements are made under the ""safe harbor"" provisions of the Private Securities Litigation Reform Act of 1995 and are relating to the Company's future financial and operating performance. All statements, other than statements of historical facts, included herein are ""forward-looking statements"" including, among other things, statements about HeartSciences' beliefs and expectations. These statements are based on current expectations, assumptions and uncertainties involving judgments about, among other things, future economic, competitive and market conditions and future business decisions, all of which are difficult or impossible to predict accurately and many of which are beyond the Company's control. The expectations reflected in these forward-looking statements involve significant assumptions, risks and uncertainties, and these expectations may prove to be incorrect. Investors should not place undue reliance on these forward-looking statements, which speak only as of the date of this press release. Potential risks and uncertainties include, but are not limited to, risks discussed in HeartSciences' Annual Report on Form 10-K for the fiscal year ended April 30, 2024, filed with the U.S. Securities and Exchange Commission (the ""SEC"") on July 29, 2024, HeartSciences’ Quarterly Report on Form 10-Q for the fiscal quarter ended July 31, 2024, filed with the SEC on September 12, 2024, HeartSciences’ Quarterly Report on Form 10-Q for the fiscal quarter ended October 31, 2024, filed with the SEC on December 16, 2024, HeartSciences’ Quarterly Report on Form 10-Q for the fiscal quarter ended January 31, 2025, filed with the SEC on March 13, 2024 and in HeartSciences' other filings with the SEC at www.sec.gov. Other than as required under the securities laws, the Company does not assume a duty to update these forward-looking statements.
+Investor Relations:
+Integrous Communications
+Mark Komonoski
+Partner
+Phone: 877-255-8483
+Email: mkomonoski@integcom.us
+Media Contact:
+HeartSciences
+Gene Gephart
++1-682-244-2578 Ext. 2024
+info@heartsciences.com",https://www.globenewswire.com/news-release/2025/03/13/3042611/0/en/HeartSciences-Provides-Business-Update-and-Reports-Third-Quarter-Fiscal-2025-Financial-Results.html,HeartSciences Provides Business Update and Reports Third,www.globenewswire.com,Heart Test Laboratories,"Southlake, TX, March 13, 2025 (GLOBE NEWSWIRE) -- HeartSciences Inc. (Nasdaq: HSCS; HSCSW) (",en
+2025-03-13,"Ulta Beauty on Thursday issued weak guidance for the year ahead as it navigates a series of internal missteps, rising competition and what it called ""consumer uncertainty.""
+
+The retailer, which appointed Kecia Steelman as its new CEO in January, said it's expecting comparable sales to be flat or grow 1% in 2025, while analysts had anticipated they would rise by 1.2%, according to StreetAccount.
+
+It's expecting full-year earnings to be between $22.50 and $22.90, lower than expectations of $23.47, according to LSEG.
+
+Ulta is the latest company to forecast a rocky year ahead. While it factored uncertain consumer spending into its guidance, the retailer is also navigating a series of company-specific challenges and views 2025 as a transition year. Fixing those issues will cost money, which is part of the reason why it's expecting profits to be lower than Wall Street anticipated in the year ahead.
+
+""I've shared our plan to make important guest-facing investments, which are necessary to improve our competitiveness and re-accelerate long term share growth,"" said Steelman on a call with analysts. ""These investments will pressure profitability in 2025 but we believe they are critical to driving long-term sustainable growth in a competitive, innovative category.""
+
+Shares rose 6% in extended trading.
+
+Here's how the beauty retailer did in its fiscal fourth quarter compared with what Wall Street was anticipating, based on a survey of analysts by LSEG:
+
+Earnings per share: $8.46 vs. $7.12 expected
+
+$8.46 vs. $7.12 expected Revenue: $3.49 billion vs. $3.46 billion expected
+
+The company's reported net income for the three-month period that ended Feb. 1 was $393 million, or $8.46 per share, compared with $394 million, or $8.08 per share, a year earlier.
+
+Sales dropped to $3.49 billion, down about 2% from $3.55 billion a year earlier. Like other retailers, Ulta benefited from an extra selling week in the year-ago period, which has negatively skewed results.
+
+Beauty has been one of retail's brightest spots over the last couple of years, but Ulta has fallen behind due to a series of self-inflicted challenges. The company's business has become more complex as it has grown, and Ulta has stumbled when launching new fulfillment choices, such as buy online, pickup in store, same-day delivery and ship from store.
+
+""As a result, our in-store presentation and guest experience today are not as strong as we would like,"" said Steelman. ""These are opportunities well within our control.""
+
+In January, Ulta announced that its longtime CEO Dave Kimbell would be replaced by its then-Chief Operating Officer Steelman, who has been with the retailer for more than a decade. Her experience as an operations guru makes her well suited to tackle some of the execution issues that have plagued Ulta.
+
+During her first earnings call as CEO, Steelman was candid about what Ulta is doing right and what it's doing wrong. She said the company will spend the next year resetting its business and working to take back the market share that it has lost.
+
+""The competitive environment in beauty has never been more intense,"" said Steelman. ""For the first time, we lost market share in the beauty category in 2024.""
+
+During Ulta's holiday quarter, comparable sales climbed 1.5%, beating expectations of 0.8% growth, according to StreetAccount. Customers spent more during the quarter, resulting in a 3% rise in average ticket, but fewer shoppers came to Ulta's stores to buy beauty products. Transactions during the quarter decreased by 1.4%.
+
+Part of that is likely because so many more companies are expanding into beauty. Not only does it compete with rival Sephora, but also mass retailers like Macy's , Walmart and Amazon have made beauty a cornerstone of their strategies and have all expanded their selections of makeup and skincare products.
+
+Last year, Ulta warned of a cooling beauty market, but companies like E.l.f. Beauty and Oddity didn't see similar dynamics, and beauty sales remained strong at retailers like Macy's and Target.
+
+In the meantime, Ulta has focused on boosting profitability. It managed to grow earnings during the quarter, even with one less selling week.",https://www.cnbc.com/2025/03/13/ulta-beauty-ulta-earnings-q4-2024.html,"Ulta issues weak guidance, citing consumer uncertainty, rising competition and company missteps",http://www.cnbc.com,,,
+2025-03-13,"A civilian search group found a gruesome site near Guadalajara, sparking outrage as authorities had raided the area months earlier but did not uncover the graves.
+
+For months, the tips had been appearing on a Facebook page. There was a mass grave hidden in a rural village outside Guadalajara, in western Mexico, the messages said. Mexico has grappled for years with a crisis of disappearances, with more than 110,000 people reported missing. Relatives of the disappeared have unearthed hundreds of graves filled with corpses. This seemed like another. But the people who ran the Facebook page — a group in Jalisco state who search for the missing — were puzzled. The grave was said to be in the village of La Estanzuela. But where, exactly?
+
+Advertisement
+
+After getting more anonymous tips, Indira Navarro, head of the group, and dozens of other victims’ relatives arrived on March 5 at an abandoned ranch outside La Estanzuela and started poking around. They dug up three underground ovens. They found hundreds and hundreds of singed bone shards — from skulls, fingers, teeth. It was what Mexicans call an “extermination camp.”
+
+But the image that’s really stunned Mexicans was of the shoes. There were piles of them — well over 200.
+
+“Of course, it immediately evokes the conditions at Auschwitz,” said José Ramón Cossío, the former chief justice of Mexico’s Supreme Court, in an interview with the radio program Aristegui Noticias.
+
+The discovery has shocked Mexicans, dominating news reports and prompting an outcry from citizens’ groups, the Catholic Church and lawyers.
+
+The country has been wracked by extreme violence since 2008, after the Mexican military — with U.S. backing — launched an offensive against criminal groups who had developed their own private armies. Several other extermination camps have been found in Mexico, and mass graves turn up nearly every week. But the site in Jalisco elicited a particular horror.
+
+The camp is a sign of how much criminal groups have penetrated the Mexican economy. They don’t just traffic drugs to the United States; they extort businesses, “tax” migrant smugglers, and run vast networks of contraband goods, from gasoline to wood.
+
+Navarro’s group believes the ranch in La Estanzuela was a recruiting and training center for one such crime group. The area is dominated by one of the country’s largest cartels, Jalisco New Generation (CJNG).
+
+Navarro’s group — called the Searching Warriors of Jalisco — had been hearing since last year about young people who arrived at bus stations in the Guadalajara area, responding to online ads for jobs as security guards, electricians or farmers. Then they disappeared.
+
+Since the discovery of the camp, several individuals have offered detailed accounts to Navarro and Mexican media of what happened there, speaking on the condition of anonymity out of fear of retribution. They said they arrived in the Guadalajara area expecting to meet their employers and were instead taken to the ranch and forced to undergo military-style training. Some people who failed or didn’t follow orders were killed, and their bodies cut up in pieces, according to the accounts. Others died of dehydration or beatings. The recruits were forced to dig the holes, then build makeshift ovens out of bricks and stones, they said.
+
+Advertisement
+
+While many people at the camp were taken against their will, others had volunteered to work for the crime group, according to some of the accounts.
+
+Criminal groups have become so big that they are major employers in Mexico. They need to continuously replenish their workforce, since their employees are killed or jailed. “Recruiting between 350 and 370 people per week [nationwide] is essential to avoid their collapse,” said a study by Mexican and Italian researchers published in 2023.
+
+One reason the camp has caused such outrage is that authorities were already aware of it. The national guard raided the ranch last September, detaining 10 people, rescuing two kidnapped people and discovering one body wrapped in plastic, officials say.
+
+Salvador González de los Santos, the state attorney general, said 10 government workers combed the site at the time, using a backhoe and dogs, but didn’t find any other corpses. They “couldn’t examine the entire ranch” because it was too big, he said.
+
+The civilian searchers found the graves by inserting simple metal rods into the earth and smelling their tips to detect the stench of decomposing bodies.
+
+“A civil-society collective, without any training in police techniques, was able to search the ranch better than the investigating experts,” wrote Sergio Sarmiento, a columnist for Reforma.
+
+In recent days, authorities have identified six areas with underground graves at the site. It’s not yet clear how many people were killed in total.
+
+Advertisement
+
+Civilian search groups have mushroomed around the country over the past 15 years, as the number of disappeared has exploded. In 2019, at the start of his term, President Andrés Manuel López Obrador vowed to intensify the search for the missing, which he characterized as a problem of prior governments. But after his own commissioner documented a growing pattern of disappearances during his term, she was forced to resign.
+
+Navarro, head of the search group, has been looking for her brother for nine years. But she said the sight of the clothing, shoes and other items at the ranch in Jalisco shocked her. “Your skin crawls seeing everything thrown on the ground, seeing the suitcases, the dreams of these young people,” she told Radio Fórmula. “To see how they ended up there because they thought they could have a better life and better salary.”",https://www.washingtonpost.com/world/2025/03/13/mexico-extermination-camp-cartels/,"Inside a Mexican cartel ‘extermination’ camp: Ovens, shoes and teeth",http://washingtonpost.com,,,
