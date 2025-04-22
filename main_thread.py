@@ -4,8 +4,8 @@ Pipeline: News Article Preprocessing - Vectorization - Clustering - Article Sele
 To run:
 python main_thread.py \
   --start_date 2025-03-01 \
-  --end_date 2025-03-03 \
-  --input_path ./news/news_2025_03.csv \
+  --end_date 2025-03-31 \
+  --input_path ./news/news_2025_03_update.csv \
   --output_path ./result/thread
 """
 
@@ -343,10 +343,9 @@ def main(args):
     if N > len(date_strs):
         N = len(date_strs)
 
-    chunk_size = (date_N + N -1)//N
-    date_strs = [date_strs[i: i+chunk_size]
-                for i in range(0, date_N, chunk_size)]
-
+    date_strs = np.array_split(date_strs, N)
+    print(date_strs, len(date_strs))
+    
     process_date_times = []
     preprocess_times = []
     vectorize_times = []
@@ -387,13 +386,14 @@ def main(args):
             sum(select_topk_times),
             sum(plot_times))
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Hot Topic Selection Pipeline")
     parser.add_argument('--start_date', type=str, required=True, help='Start date in YYYY-MM-DD')
     parser.add_argument('--end_date', type=str, required=True, help='End date in YYYY-MM-DD')
     parser.add_argument('--input_path', type=str, required=True, help='Path to the input data')
     parser.add_argument('--output_path', type=str, required=True, help='Path to save the output data')
-    parser.add_argument('--N', type=int, default=5, help='Number of workers to use')
+    parser.add_argument('--N', type=int, default=10, help='Number of workers to use')
     
     args = parser.parse_args()
     total_time, times = main(args)
