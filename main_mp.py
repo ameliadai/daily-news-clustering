@@ -4,8 +4,8 @@ Pipeline: News Article Preprocessing - Vectorization - Clustering - Article Sele
 To run:
 python main_mp.py \
   --start_date 2025-03-01 \
-  --end_date 2025-03-03 \
-  --input_path ./news/news_2025_03.csv \
+  --end_date 2025-03-31 \
+  --input_path ./news/news_2025_03_update.csv \
   --output_path ./result/multiprocessing
 """
 
@@ -50,7 +50,6 @@ nltk.download('punkt')
 
 # Constants
 DEFAULT_NUM_ARTICLES = 3
-
 
 def load_data(file_path):
     ts = time.perf_counter()
@@ -226,9 +225,9 @@ def plot_cluster(valid_cluster_inds, X, data):
                         key=lambda x: len(valid_cluster_inds[x]),
                         reverse=True)[:DEFAULT_NUM_ARTICLES]
     wc_title_fig, axs_title = plt.subplots(1, DEFAULT_NUM_ARTICLES,
-                                           figsize=(10*DEFAULT_NUM_ARTICLES, 5))
+                                        figsize=(10*DEFAULT_NUM_ARTICLES, 5))
     wc_text_fig, axs_text = plt.subplots(1, DEFAULT_NUM_ARTICLES,
-                                         figsize=(10*DEFAULT_NUM_ARTICLES, 5))
+                                        figsize=(10*DEFAULT_NUM_ARTICLES, 5))
     stop = stopwords.words('english')
     for i in range(DEFAULT_NUM_ARTICLES):
         titles = data.iloc[valid_cluster_inds[top_valid[i]]]['title']
@@ -260,12 +259,11 @@ def plot_cluster(valid_cluster_inds, X, data):
     return time.perf_counter()-ts, (cluster_fig, wc_title_fig, wc_text_fig)
 
 
-def process_date(date, data, output_path):
+def process_date(date, daily_data, output_path):
     """
     Process and save selected articles for a specific date.
     """
     ts = time.perf_counter()
-    daily_data = data[data['date'] == date]
     if daily_data.empty:
         print(f"No data for date: {date}")
         return
@@ -312,6 +310,7 @@ def process_date(date, data, output_path):
     cluster_fig.savefig(os.path.join(save_path, 'clusters.png'))
     wc_title_fig.savefig(os.path.join(save_path, 'titles.png'), bbox_inches='tight')
     wc_text_fig.savefig(os.path.join(save_path, 'texts.png'), bbox_inches='tight')
+    plt.close()
 
     print(f"Articles for {date} saved successfully!")
 
@@ -319,8 +318,17 @@ def process_date(date, data, output_path):
             pre_time, vec_time, cluster_time, 
             select_time, plot_time)
 
+if __name__ == '__main__':  
+    parser = argparse.ArgumentParser(description="Hot Topic Selection Pipeline")
+    parser.add_argument('--start_date', type=str, required=True, help='Start date in YYYY-MM-DD')
+    parser.add_argument('--end_date', type=str, required=True, help='End date in YYYY-MM-DD')
+    parser.add_argument('--input_path', type=str, required=True, help='Path to the input data')
+    parser.add_argument('--output_path', type=str, required=True, help='Path to save the output data')
+    parser.add_argument('--N', type=int, default=2, help='Number of workers to use')
+    
+    args = parser.parse_args()
 
-def main(args):
+    ts = time.perf_counter()
     load_time, data = load_data(args.input_path)
     
     start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
@@ -331,8 +339,11 @@ def main(args):
 
     func = partial(process_date, data=data, output_path=args.output_path)
 
-    with Pool(mp.cpu_count()) as p:
-        results = p.map(func, date_strs)
+    print(f'\nTotal Workers = {mp.cpu_count()}\n')
+
+    func_inputs = [(d, data[data['date'] == d]) for d in date_strs]
+    with Pool(args.N) as p:
+        results = p.starmap(process_date, [(d, daily_data, args.output_path) for d, daily_data in func_inputs])
     
     process_date_times = []
     preprocess_times = []
@@ -349,28 +360,14 @@ def main(args):
         select_topk_times.append(times[4])
         plot_times.append(times[5])
 
-
-    return (load_time,
-            sum(process_date_times),
-            sum(preprocess_times),
-            sum(vectorize_times),
-            sum(cluster_times),
-            sum(select_topk_times),
-            sum(plot_times))
-        
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Hot Topic Selection Pipeline")
-    parser.add_argument('--start_date', type=str, required=True, help='Start date in YYYY-MM-DD')
-    parser.add_argument('--end_date', type=str, required=True, help='End date in YYYY-MM-DD')
-    parser.add_argument('--input_path', type=str, required=True, help='Path to the input data')
-    parser.add_argument('--output_path', type=str, required=True, help='Path to save the output data')
-    
-    args = parser.parse_args()
-
-    ts = time.perf_counter()
-    times = main(args)
     total_time = time.perf_counter()-ts
+    times = (load_time,
+             sum(process_date_times),
+             sum(preprocess_times),
+             sum(vectorize_times),
+             sum(cluster_times),
+             sum(select_topk_times),
+             sum(plot_times))
 
     with open(args.output_path + "/times.txt", "w") as f:
         print(f'Elapsed Time = {total_time} s', file=f)

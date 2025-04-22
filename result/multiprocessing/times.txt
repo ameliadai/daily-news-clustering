@@ -1,9 +1,9 @@
-Elapsed Time = 46.5161587499897 s
--- Loading Data = 0.32158720900770277 s | 0.691% total
--- Processing Dates = 109.33418341603829 s | 235.046% total
-   -- Vectorizing Texts = 98.55562341597397 s | 90.142% Processing Dates
-      -- Pre-processing Texts = 5.309616916056257 s | 5.387% Vectorizing Texts
-   -- Clustering Texts = 0.11643670802004635 s | 0.106% Processing Dates
-   -- Selecting Top Articles = 9.473491376033053 s | 8.665% Processing Dates
-      -- Plotting = 9.464134081965312 s | 99.901% Selecting Top Articles
+Elapsed Time = 416.37087283306755 s
+-- Loading Data = 0.41083379194606096 s | 0.099% total
+-- Processing Dates = 821.9392317512538 s | 197.406% total
+   -- Vectorizing Texts = 683.2372727897018 s | 83.125% Processing Dates
+      -- Pre-processing Texts = 36.36674554098863 s | 5.323% Vectorizing Texts
+   -- Clustering Texts = 1.028008918859996 s | 0.125% Processing Dates
+   -- Selecting Top Articles = 123.41787162830587 s | 15.015% Processing Dates
+      -- Plotting = 123.00046424986795 s | 99.662% Selecting Top Articles
 
