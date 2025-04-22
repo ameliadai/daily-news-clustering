@@ -4,8 +4,8 @@ Pipeline: News Article Preprocessing - Vectorization - Clustering - Article Sele
 To run:
 python main_numba.py \
   --start_date 2025-03-01 \
-  --end_date 2025-03-03 \
-  --input_path ./news/news_2025_03.csv \
+  --end_date 2025-03-31 \
+  --input_path ./news/news_2025_03_update.csv \
   --output_path ./result/numba
 """
 
