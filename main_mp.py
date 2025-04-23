@@ -337,13 +337,9 @@ if __name__ == '__main__':
     date_range = pd.date_range(start=start_date, end=end_date)
     date_strs = [d.strftime("%Y-%m-%d") for d in date_range]
 
-    func = partial(process_date, data=data, output_path=args.output_path)
-
-    print(f'\nTotal Workers = {mp.cpu_count()}\n')
-
-    func_inputs = [(d, data[data['date'] == d]) for d in date_strs]
+    func_inputs = [(d, data[data['date'] == d], args.output_path) for d in date_strs]
     with Pool(args.N) as p:
-        results = p.starmap(process_date, [(d, daily_data, args.output_path) for d, daily_data in func_inputs])
+        results = p.starmap(process_date, func_inputs)
     
     process_date_times = []
     preprocess_times = []

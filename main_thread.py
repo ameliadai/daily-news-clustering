@@ -339,12 +339,11 @@ def main(args):
     date_strs = [d.strftime("%Y-%m-%d") for d in date_range]
 
     # chunk dates
-    N, date_N = args.N, len(date_strs)
+    N = args.N
     if N > len(date_strs):
         N = len(date_strs)
 
     date_strs = np.array_split(date_strs, N)
-    print(date_strs, len(date_strs))
     
     process_date_times = []
     preprocess_times = []
