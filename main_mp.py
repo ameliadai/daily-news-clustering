@@ -308,9 +308,11 @@ def process_date(date, daily_data, output_path):
     # saving plots
     cluster_fig, wc_title_fig, wc_text_fig = figs
     cluster_fig.savefig(os.path.join(save_path, 'clusters.png'))
+    plt.close(cluster_fig)
     wc_title_fig.savefig(os.path.join(save_path, 'titles.png'), bbox_inches='tight')
+    plt.close(wc_title_fig)
     wc_text_fig.savefig(os.path.join(save_path, 'texts.png'), bbox_inches='tight')
-    plt.close()
+    plt.close(wc_text_fig)
 
     print(f"Articles for {date} saved successfully!")
 
