@@ -152,8 +152,8 @@ def adjust_dbscan_params(X, k=5):
     if X.shape[0] < k:
         return 0.5, 2  # Default fallback for small datasets
     
-    nbrs = NearestNeighbors(n_neighbors=k).fit(X)
-    distances, _ = nbrs.kneighbors(X)
+    # nbrs = NearestNeighbors(n_neighbors=k).fit(X)
+    # distances, _ = nbrs.kneighbors(X)
     # sorted_distances = np.sort(distances[:, k - 1], axis=0)
     sorted_distances = kth_neighbor_distances(X, k) # NUMBA OPTIMIZATION
 
