@@ -175,6 +175,7 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
     valid_clusters = sorted(valid_clusters, key=lambda x: x[1], reverse=True)
     
     # Sanity check
+    topk_cluster_size = []
     print(f"--- Titles in Top-{DEFAULT_NUM_ARTICLES} Valid Clusters ---")
     for i, (cluster_id, size, avg_distance) in enumerate(valid_clusters[:DEFAULT_NUM_ARTICLES], start=1):
         cluster_indices = valid_cluster_inds[cluster_id]
@@ -182,6 +183,9 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
         print(f"\nCluster {i} (ID: {cluster_id}, Size: {size}, Avg Distance: {avg_distance:.4f}) Titles:")
         for title in cluster_titles:
             print(f"- {title}")
+        
+        # saving cluster size for result_summary.csv
+        topk_cluster_size.append(size)
     print("--------------------------------------\n")
     
     selected_indices = set()
@@ -200,7 +204,7 @@ def select_top_articles(data, labels, X, avg_distance_threshold=0.6):
             selected_indices.add(idx)
             selected_articles.append(data.iloc[[idx]])
     
-    return pd.concat(selected_articles, ignore_index=True), figs, plot_time
+    return pd.concat(selected_articles, ignore_index=True), topk_cluster_size, figs, plot_time
 
 
 @time_func
@@ -302,10 +306,23 @@ def process_date(date, data, output_path):
         X,
         avg_distance_threshold=0.7
     )
-    selected_articles, figs, plot_time = outputs
+    selected_articles, topk_cluster_size, figs, plot_time = outputs
     
     save_path = os.path.join(output_path, date)
     os.makedirs(save_path, exist_ok=True)
+
+    # saving performance summary
+    res = pd.DataFrame({'date': [date],
+                        'n_pts':[total_samples],
+                        'n_clusters': [n_clusters],
+                        'sil_coef':[sil_score],
+                        'n_grouped':[n_grouped_points],
+                        'n_noise':[n_noise_points],
+                        'topk_cluster_size':[topk_cluster_size]})
+    if os.path.exists(os.path.join(output_path, 'result_summary.csv')):
+        res_temp = pd.read_csv(os.path.join(output_path, 'result_summary.csv'))
+        res = pd.concat([res_temp, res], axis=0, ignore_index=True)
+    res.to_csv(os.path.join(output_path, 'result_summary.csv'), index=False)
 
     # saving articles
     selected_articles.to_csv(os.path.join(save_path, 'articles_selected.csv'), index=False)
