@@ -196,7 +196,7 @@ def plot_cluster(valid_cluster_inds, X, data, topk):
     # plot 2D with cluster labels
     colors = plt.cm.rainbow(np.linspace(0, 1, len(valid_cluster_inds)))
     cluster_fig, ax = plt.subplots(figsize=(5,3))
-    ax.set_title('TSNE Cluster Visualization')
+    ax.set_title('UMAP Cluster Visualization')
     i = 0
     for label, indices in valid_cluster_inds.items():
         ax.scatter(x_2d[indices, 0], x_2d[indices, 1], color=colors[i], label=i+1)
