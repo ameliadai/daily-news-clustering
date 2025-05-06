@@ -1,6 +1,6 @@
 # daily-news-clustering
 
-Amelia Dai, Dan Pechi, Marina Castaño Ishizaka, Simone Rittenhouse
+Amelia Dai (hd2584), Dan Pechi (dp3864), Marina Castaño Ishizaka (mc9986), Simone Rittenhouse (sgr344)
 
 This repository corresponds to the final project for the Spring 2025 semester of Advanced Python for Data Science (DS-GA 1019). The aim of this project is to automatically and efficiently track the world’s biggest news events every single day. To do so, we build a pipeline for automated news article clustering. Our algorithm takes in a date range and returns the top $k$ clusters of topics for each date in the range.
 
